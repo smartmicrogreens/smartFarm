@@ -1,38 +1,54 @@
 #include "asar.hpp"
-#include "motor.hpp"
-#include <Arduino.h>
-ASAR::ASAR() {
-    rightMotor = new Motor(rightMotorPinA, rightMotorPinB);
-    leftMotor = new Motor(leftMotorPinA, leftMotorPinB);
+
+ASAR::ASAR( int MOTOR_R_A,
+            int MOTOR_R_B,
+            int MOTOR_L_A,
+            int MOTOR_L_B,
+            int US_PING,
+            int US_ECHO,
+            int RFID_SS,
+            int RFID_RST,
+            int RIGHT_IR_PIN,
+            int LEFT_IR_PIN) {
+
+    rightMotor = new Motor(MOTOR_R_A, MOTOR_R_B);
+    leftMotor = new Motor(MOTOR_L_A, MOTOR_L_B);
     usSensor = new Ultrasonic(US_PING, US_ECHO);
+    rfidSensor = new MFRC522(RFID_SS, RFID_RST);   // Create MFRC522 instance.
+    IR_L_PIN = LEFT_IR_PIN;
+    IR_R_PIN = RIGHT_IR_PIN;
+
+    /* Initialization of RFID reader */
+    SPI.begin();  // SPI initialized for RFID board
+    rfidSensor->PCD_Init(); // Init MFRC522 card
+    delay(4);
 }
 
 void ASAR::readInfrared(bool& R, bool& L) {
     // Reads both sensors and compare with 1. If 1, will turn true, if 0 will turn false.
-    R = digitalRead(RIGHT_IR_PIN) == 1;
-    L = digitalRead(LEFT_IR_PIN) == 1;
+    R = digitalRead(IR_R_PIN) == 1;
+    L = digitalRead(IR_L_PIN) == 1;
 }
+
 bool ASAR::compareDistance(uint8_t _distance) {
     // _distance can be between 2 and 400 cm
     if(usSensor->read() == _distance) return true;
     else return false;
 }
 
+byte* ASAR::readStationID() {
+    return rfidSensor->uid.uidByte;
+}
+
 void ASAR::moveForward() {
 
-    readInfrared(IR_R, IR_L);
-    Serial.print("Right: ");
-    Serial.print(IR_R);
-    Serial.print(" - Left:");
-    Serial.println(IR_L);
     if(IR_R && IR_L) {
         this->rightMotor->updateSpeed(180);
         this->leftMotor->updateSpeed(180);
         this->rightMotor->moveForward();
         this->leftMotor->moveForward();
-        Serial.println("Derecho!");
     }
-    else if(!IR_R && IR_L){
+    else if(!IR_R && IR_L) {
         //this->leftMotor->updateSpeed(10);
         //this->leftMotor->moveForward();
         this->stop();
