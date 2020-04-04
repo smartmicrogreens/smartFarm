@@ -36,8 +36,18 @@ bool ASAR::compareDistance(uint8_t _distance) {
     else return false;
 }
 
-byte* ASAR::readStationID() {
-    return rfidSensor->uid.uidByte;
+String ASAR::readStationID() {
+    // Time to read the card's UID is 10~11ms
+    rfidSensor->PICC_ReadCardSerial();
+    String uid(rfidSensor->uid.uidByte[0]);
+    for(int i=0; i<9; i++)
+        uid.concat(rfidSensor->uid.uidByte[i]);
+    return uid;
+}
+
+bool ASAR::hasArrivedToStation() {
+    // Time to detect the card is 3ms
+    return rfidSensor->PICC_IsNewCardPresent();
 }
 
 void ASAR::moveForward() {

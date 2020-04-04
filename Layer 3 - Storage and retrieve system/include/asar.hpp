@@ -68,7 +68,8 @@ public:
     void readInfrared(bool&, bool&);
     bool compareDistance(uint8_t);
 
-    byte* readStationID();
+    String readStationID();
+    bool hasArrivedToStation();
 
     void moveForward();
     void stop();
