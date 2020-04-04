@@ -3,10 +3,8 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-/src/asarcom.cpp
 /src/main.cpp
 /src/map.cpp
-/include/asarcom.hpp
 /include/main.hpp
 /include/map.hpp
 ASAR.code-workspace
