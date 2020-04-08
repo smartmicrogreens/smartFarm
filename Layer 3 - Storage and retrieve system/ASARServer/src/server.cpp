@@ -2,9 +2,10 @@
 
 ASARServer::ASARServer() {
 
-    Serial.begin(115200);
+    Serial.flush();
+    Serial.begin(BAUD_RATE);
     delay(1000);
-    server = new WiFiServer(23);
+    server = new WiFiServer(TELNET_PORT);
     clients = new WiFiClient;
     WiFi.mode(WIFI_STA);
     WiFi.begin("testing", "1234567890");
@@ -19,21 +20,28 @@ ASARServer::ASARServer() {
     Serial.println(WiFi.localIP());
     
     server->begin();
+    maxToTcp = 0;
     //client = new WiFiClient();
 }
 void ASARServer::displayConnectedUsers() {
-    size_t maxToTcp = 0;
+    
     if (server->hasClient())
-        if (!clients->available()) { // equivalent to !serverClients[i].connected()
+        if (!clients->connected()) { // If does not display, check negating with !
             *clients = server->available();
-            Serial.print("Client connected .-");
+            Serial.println("Client connected: ");
+            Serial.print("Client IP: ");
+            Serial.println(clients->remoteIP().toString());
         }
+}
 
+void ASARServer::updateIOStreams() {
+
+    // Update for incoming messages(From WiFi to Serial port)
     while (clients->available() && Serial.availableForWrite() > 0) {
         // working char by char is not very efficient
         Serial.write(clients->read());
 
-        maxToTcp = 0;
+        maxToTcp = 0;   // Max data to send by TCP
         if (clients) {
             size_t afw = clients->availableForWrite();
             if (afw) {
@@ -42,7 +50,8 @@ void ASARServer::displayConnectedUsers() {
             } 
         }
     }
-    
+
+    // Update for outcoming messages(From Serial port to WiFi)
     // Checks UART data
     size_t len = std::min((size_t)Serial.available(), maxToTcp);
     len = std::min(len, (size_t)STACK_PROTECTOR);
