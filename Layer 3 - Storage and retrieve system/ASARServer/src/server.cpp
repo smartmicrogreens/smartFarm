@@ -2,7 +2,7 @@
 
 ASARServer::ASARServer() {
 
-    Serial.flush();
+    //Serial.flush();
     Serial.begin(BAUD_RATE);
     delay(1000);
     server = new WiFiServer(TELNET_PORT);
