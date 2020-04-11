@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <LinkedList.h>
+#include <CRC32.h>
 
 #define BUFF_SIZE 512
 
@@ -12,16 +13,24 @@ enum instructions {goToStation, rotateEast, rotateWest, approachShelf, leaveShel
 typedef struct {
     char instruction;
     String body;
-    int checksum;   // instruction + body.size() = checksum value
 } Command;
 
 class ASARCOM {
 private:
-
+    LinkedList<char> buffer;
+    int readBytes;
+    LinkedList<Command> pipeline;
+    uint32_t checksum;   // Calculate by CRC32
+    CRC32 crc;
 
 public:
     ASARCOM();
-
+    void readStream();
+    void addInstruction(Command);
+    void stopProcess();
+    bool read();
+    Command interpretInput(bool& _validChecksum);
+    int calculateChecksum(Command);
 };
 
 #endif // ASARCOM_HPP
