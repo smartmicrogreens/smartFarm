@@ -3,8 +3,8 @@
 
 ASARCOM::ASARCOM() {
     // Connect this communication stream to interruption
-    Serial1.begin(38400);   // Start communication with ESP8266
-    Serial1.println("Connected to ESP8266");
+    Serial1.begin(74880);   // Start communication with ESP8266
+    //Serial1.println("Connected to ESP8266");
 }
 
 void ASARCOM::addInstruction(Command) {

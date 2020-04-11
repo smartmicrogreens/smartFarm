@@ -9,15 +9,17 @@ ASARServer::ASARServer() {
     clients = new WiFiClient;
     WiFi.mode(WIFI_STA);
     WiFi.begin("testing", "1234567890");
-    Serial.print("Connecting");
+    //Serial.print("Connecting");
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
-        Serial.print(".");
+        //Serial.print(".");
     }
-    Serial.println(" ");
+    //Serial.println(" ");
     server->setNoDelay(true);
-    Serial.print("Connected to WiFi. IP:");
+    //Serial.write(');
+    Serial.write("@Connected to WiFi - Your IP:");
     Serial.println(WiFi.localIP());
+    Serial.write('>');
     
     server->begin();
     maxToTcp = 0;
@@ -25,21 +27,26 @@ ASARServer::ASARServer() {
 }
 void ASARServer::displayConnectedUsers() {
     
-    if (server->hasClient())
-        if (!clients->connected()) { // If does not display, check negating with !
-            *clients = server->available();
-            Serial.println("Client connected: ");
-            Serial.print("Client IP: ");
+    if (server->hasClient())  // If User is waiting to connect
+        if (!clients->connected()) { // Check if no user is connected
+            *clients = server->available(); // Then add the one waiting to connect
+            Serial.println(START_C);
+            Serial.print("Client connected - IP: ");
             Serial.println(clients->remoteIP().toString());
+            Serial.print(END_C);
         }
 }
 
 void ASARServer::updateIOStreams() {
-
+    bool clientFlag = false;
+    //if(clients->;
     // Update for incoming messages(From WiFi to Serial port)
+    if(clients->available() && Serial.availableForWrite() > 0) Serial.println(START_C);
+
     while (clients->available() && Serial.availableForWrite() > 0) {
         // working char by char is not very efficient
         Serial.write(clients->read());
+        clientFlag = true;
 
         maxToTcp = 0;   // Max data to send by TCP
         if (clients) {
@@ -50,6 +57,9 @@ void ASARServer::updateIOStreams() {
             } 
         }
     }
+    if(clientFlag) Serial.write(END_C);
+
+
 
     // Update for outcoming messages(From Serial port to WiFi)
     // Checks UART data
