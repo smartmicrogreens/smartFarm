@@ -1,0 +1,5 @@
+****** Instalar PySerial para comunicación por puerto serie ******
+pip install pyserial
+
+****** Instalar módulo administrador de base de datos MySQL ******
+pip install mysql-connector

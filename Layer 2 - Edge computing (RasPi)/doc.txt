@@ -25,9 +25,3 @@ En consola: sudo apt install python-pip
 En consola: pip install pyserial
 
 -- Cambiar "pyserial" por el paquete que se quiera instalar.
-
-En consola: pip show pyserial
-
--- Ir a la ruta indicada en "location"
-
-En consola: python setup.py install

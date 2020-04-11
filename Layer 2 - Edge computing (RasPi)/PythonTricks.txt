@@ -1,0 +1,6 @@
+*** Run two scripts at the same time ***
+
+The simplest solution to run two Python processes concurrently is to run them from a bash file, and tell each process to go into the background with the & shell operator.
+
+python script1.py &
+python script2.py &

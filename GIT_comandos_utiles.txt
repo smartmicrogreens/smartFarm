@@ -17,16 +17,17 @@ git push -u origin master
 
 *** Repo Git existente? ***
 
-cd existing_git_repo
+cd carpeta_proyecto
 git remote add origin git@github.com:smartmicrogreens/smartFarm.git
+git pull origin
 git push -u origin master
 
-*** Working with new branch ***
+*** Trabajando con nuevo branch ***
 
 git branch mi_branch
 git checkout mi_branch
 git add -A
-git commit -m 'creado nuevo branch'
+git commit -m 'Creado nuevo branch'
 git push -u origin mi_branch
 
 *** Combinar master con branch ***
