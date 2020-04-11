@@ -3,6 +3,7 @@
 
 #include <ESP8266WiFi.h>
 #include <SoftwareSerial.h>
+//#include <CRC32.h>
 
 #define STACK_PROTECTOR 512
 #define TELNET_PORT 23
@@ -17,6 +18,7 @@ private:
     WiFiServer* server;
     WiFiClient* clients;
     size_t maxToTcp;
+    //CRC32 crc;
     //SoftwareSerial* logger;
 
 public:
