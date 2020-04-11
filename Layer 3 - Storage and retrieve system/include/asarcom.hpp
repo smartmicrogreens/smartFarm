@@ -17,17 +17,11 @@ typedef struct {
 
 class ASARCOM {
 private:
-    byte* buffer;
-    int readBytes;
-    LinkedList<Command> pipeline;
+
 
 public:
     ASARCOM();
-    void readStream();
-    void addInstruction(Command);
-    void stopProcess();
-    Command interpretInput(bool& _validChecksum);
-    int calculateChecksum(Command);
+
 };
 
 #endif // ASARCOM_HPP

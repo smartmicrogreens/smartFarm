@@ -5,6 +5,8 @@
 .vscode/ipch
 /src/main.cpp
 /src/map.cpp
+/src/asarcom_backup.cpp
 /include/main.hpp
 /include/map.hpp
+/include/asarcom_backup.hpp
 ASAR.code-workspace
