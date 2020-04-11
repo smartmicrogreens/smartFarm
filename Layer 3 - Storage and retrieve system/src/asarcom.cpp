@@ -4,7 +4,16 @@
 ASARCOM::ASARCOM() {
     // Connect this communication stream to interruption
     Serial1.begin(74880);   // Start communication with ESP8266
-    //Serial1.println("Connected to ESP8266");
+
+    /* ESP6288 TRASH AVOID WORKAROUND
+     * Below code delays 6 sec to avoid the trash data from ESP8266.
+     * Then, once it arrives, it is known beforehand that the total is 63 bytes.
+     * We read the bytes into a trash can array and forget about get rid of it.
+     * */
+    delay(6000);
+    uint8_t tcan[63];
+    if(Serial1.available() > 0) Serial1.readBytes(tcan, 63);
+
 }
 
 void ASARCOM::addInstruction(Command) {
