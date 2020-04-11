@@ -6,7 +6,7 @@
 
 #define STACK_PROTECTOR 512
 #define TELNET_PORT 23
-#define BAUD_RATE 9600
+#define BAUD_RATE 38400
 
 class ASARServer {
 private:
