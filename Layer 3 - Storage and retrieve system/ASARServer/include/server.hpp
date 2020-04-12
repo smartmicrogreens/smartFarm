@@ -3,12 +3,12 @@
 
 #include <ESP8266WiFi.h>
 #include <SoftwareSerial.h>
-//#include <CRC32.h>
+#include <CRC32.h>
 
 #define STACK_PROTECTOR 512
 #define TELNET_PORT 23
 #define BAUD_RATE 74800
-#define START_C '@'
+#define START_C "abc"
 #define END_C '>'
 
 class ASARServer {
@@ -20,6 +20,7 @@ private:
     WiFiServer* server;
     WiFiClient* clients;
     size_t maxToTcp;
+    bool dataFlag;
     //CRC32 crc;
     //SoftwareSerial* logger;
 
@@ -27,6 +28,7 @@ public:
     ASARServer();
     void displayConnectedUsers();
     void updateIOStreams();
+    String encapsulate(String);
 };
 
 #endif

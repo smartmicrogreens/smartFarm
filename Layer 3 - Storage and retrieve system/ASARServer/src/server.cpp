@@ -11,14 +11,14 @@ ASARServer::ASARServer() {
     WiFi.mode(WIFI_STA);
     WiFi.begin("testing", "1234567890");
 
-    Serial.println("Connecting");
+    Serial.print(encapsulate("Connecting"));
     while (WiFi.status() != WL_CONNECTED) delay(500);
 
 
     server->setNoDelay(true);
-    Serial.write("@Connected to WiFi - Your IP:");
-    Serial.println(WiFi.localIP());
-    Serial.write('>');
+    Serial.print(encapsulate("Connected to WiFi - Your IP: "));
+    Serial.print(encapsulate(WiFi.localIP().toString()));
+    //Serial.write('\0');
     
     server->begin();
     maxToTcp = 0;
@@ -29,23 +29,21 @@ void ASARServer::displayConnectedUsers() {
     if (server->hasClient())  // If User is waiting to connect
         if (!clients->connected()) { // Check if no user is connected
             *clients = server->available(); // Then add the one waiting to connect
-            Serial.println(START_C);
-            Serial.print("Client connected - IP: ");
-            Serial.println(clients->remoteIP().toString());
-            Serial.print(END_C);
+            Serial.print(encapsulate("Client connected - IP: "));
+            Serial.println(encapsulate(clients->remoteIP().toString()));
         }
 }
 
 void ASARServer::updateIOStreams() {
-    bool clientFlag = false;
-    //if(clients->;
+    dataFlag = false;
     // Update for incoming messages(From WiFi to Serial port)
-    if(clients->available() && Serial.availableForWrite() > 0) Serial.println(START_C);
+    if(clients->available() && Serial.availableForWrite() > 0) dataFlag = true;
+    String body;
 
     while (clients->available() && Serial.availableForWrite() > 0) {
         // working char by char is not very efficient
-        Serial.write(clients->read());
-        clientFlag = true;
+        body.concat((char)clients->read());
+        dataFlag = true;
 
         maxToTcp = 0;   // Max data to send by TCP
         if (clients) {
@@ -56,9 +54,8 @@ void ASARServer::updateIOStreams() {
             } 
         }
     }
-    if(clientFlag) Serial.write(END_C);
-
-
+    if(dataFlag) Serial.print(encapsulate(body));
+    
 
     // Update for outcoming messages(From Serial port to WiFi)
     // Checks UART data
@@ -76,4 +73,15 @@ void ASARServer::updateIOStreams() {
             if (tcp_sent != len)  Serial.printf("len mismatch: available:%zd serial-read:%zd tcp-write:%zd\n", len, serial_got, tcp_sent);
         }
     }
+}
+
+String ASARServer::encapsulate(String _body) {
+    String output;
+    CRC32 crc;
+    crc.reset();
+    for(unsigned int i=0; i<_body.length(); i++)
+        crc.update( (uint8_t) _body.charAt(i) );
+    String checksum(crc.finalize());
+    output.concat("abc" + _body + "%" + checksum + ">");
+    return output;
 }

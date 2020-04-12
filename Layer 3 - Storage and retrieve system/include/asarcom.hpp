@@ -30,6 +30,7 @@ public:
     void addInstruction(Command);
     void stopProcess();
     bool read(LinkedList<char>&);
+    bool read(String&);
     Command interpretInput(bool& _validChecksum);
     int calculateChecksum(Command);
 };
