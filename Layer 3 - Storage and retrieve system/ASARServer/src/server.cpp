@@ -7,16 +7,15 @@ ASARServer::ASARServer() {
     delay(1000);
     server = new WiFiServer(TELNET_PORT);
     clients = new WiFiClient;
+
     WiFi.mode(WIFI_STA);
     WiFi.begin("testing", "1234567890");
-    //Serial.print("Connecting");
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        //Serial.print(".");
-    }
-    //Serial.println(" ");
+
+    Serial.println("Connecting");
+    while (WiFi.status() != WL_CONNECTED) delay(500);
+
+
     server->setNoDelay(true);
-    //Serial.write(');
     Serial.write("@Connected to WiFi - Your IP:");
     Serial.println(WiFi.localIP());
     Serial.write('>');

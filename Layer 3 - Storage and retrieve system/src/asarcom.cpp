@@ -2,17 +2,16 @@
 #include <CRC32.h>
 
 ASARCOM::ASARCOM() {
-    // Connect this communication stream to interruption
-    Serial1.begin(74880);   // Start communication with ESP8266
+    Serial1.begin(ESP8266_BAUD_RATE);   // Start communication with ESP8266(DO NOT CHANGE)
 
     /* ESP6288 TRASH AVOID WORKAROUND
      * Below code delays 6 sec to avoid the trash data from ESP8266.
      * Then, once it arrives, it is known beforehand that the total is 63 bytes.
      * We read the bytes into a trash can array and forget about get rid of it.
      * */
-    delay(6000);
-    uint8_t tcan[63];
-    if(Serial1.available() > 0) Serial1.readBytes(tcan, 63);
+    // delay(6000);
+    // uint8_t tcan[63];
+    // if(Serial1.available() > 0) Serial1.readBytes(tcan, 63);
 
 }
 
@@ -26,58 +25,86 @@ int ASARCOM::calculateChecksum(Command) {
     
 }
 
-bool ASARCOM::read() {
-    bool checksumValid = false;
-    Command temp;
-    char readCharacter;
-    int i = 0;
-    crc.reset();
-    if(Serial1.available() <= 0) return false;
-    else 
+bool ASARCOM::read(LinkedList<char>& _buffer) {
+
+    char input;
+    if(Serial1.available() > 0) 
     {
-        readCharacter = Serial1.read();
-        if(readCharacter == '@') // Looks for character of beggining of line
-        {
-            Serial.print("@ ");
-
-            /* 
-             * Read BODY of the message */
-            bool endOfTransmision = false;
-            while(!endOfTransmision) 
+      input = Serial1.read();   // Read once and check if is begin-of-line character.
+      if(input == '@') 
+      {
+         input = Serial1.read();    // Read next
+         while (input != '>')       // Keep reading and saving until end-of-line character.
+         {
+            if(input > 0)           // User to avoid trash from ESP8266 serial(Yes, chinese garbage)
             {
-                readCharacter = Serial1.read();
-                if(readCharacter != '%')    // While eol character is not present, continue reading.
-                {
-                    buffer.add(readCharacter);
-                    crc.update(readCharacter);
-                }
-                else endOfTransmision = true;   // End of line character detected
+                crc.update(input);    // Update CRC
+                //Serial.print(input);  
+                _buffer.add(input);     // Add char to buffer
             }
+            input = Serial1.read();
+         }
 
-            /* 
-             * Read CHECKSUM of the message */
-            //bool endOfChecksum = false;
-            //while (!endOfChecksum) 
-            //{
-            readCharacter = Serial1.read();
-            Serial.print("Checksum(Serial) = ");
-            Serial.println(checksum, BIN);
-            //}
-            Serial.print("Checksum size = ");
-            Serial.println(i);
-            checksumValid = crc.finalize() == checksum;
-        }
-        readBytes = buffer.size();
-        //temp = interpretInput(checksumValid);   // converts from array of data to command type
-        // Validates checksum
-        if(checksumValid) {
-            pipeline.add(temp);
-            Serial.print("Checksum(CRC32) = ");
-            Serial.println(crc.finalize(), HEX);
-        }
-        else return false;
+      //Serial.println(" ");
+      Serial.print("Checksum = ");
+      Serial.println(crc.finalize(), HEX);
+      crc.reset();
+
+      }
     }
-    return true;
+
+
+    // bool checksumValid = false;
+    // Command temp;
+    // char readCharacter;
+    // int i = 0;
+    // crc.reset();
+    // if(Serial1.available() <= 0) return false;
+    // else 
+    // {
+    //     readCharacter = Serial1.read();
+    //     if(readCharacter == '@') // Looks for character of beggining of line
+    //     {
+    //         Serial.print("@ ");
+
+    //         /* 
+    //          * Read BODY of the message */
+    //         bool endOfTransmision = false;
+    //         while(!endOfTransmision) 
+    //         {
+    //             readCharacter = Serial1.read();
+    //             if(readCharacter != '%')    // While eol character is not present, continue reading.
+    //             {
+    //                 buffer.add(readCharacter);
+    //                 crc.update(readCharacter);
+    //             }
+    //             else endOfTransmision = true;   // End of line character detected
+    //         }
+
+    //         /* 
+    //          * Read CHECKSUM of the message */
+    //         //bool endOfChecksum = false;
+    //         //while (!endOfChecksum) 
+    //         //{
+    //         readCharacter = Serial1.read();
+    //         Serial.print("Checksum(Serial) = ");
+    //         Serial.println(checksum, BIN);
+    //         //}
+    //         Serial.print("Checksum size = ");
+    //         Serial.println(i);
+    //         checksumValid = crc.finalize() == checksum;
+    //     }
+    //     readBytes = buffer.size();
+    //     //temp = interpretInput(checksumValid);   // converts from array of data to command type
+    //     // Validates checksum
+    //     if(checksumValid) {
+    //         pipeline.add(temp);
+    //         Serial.print("Checksum(CRC32) = ");
+    //         Serial.println(crc.finalize(), HEX);
+    //     }
+    //     else return false;
+    // }
+    // return true;
 }
 
 Command ASARCOM::interpretInput(bool& _validChecksum) {

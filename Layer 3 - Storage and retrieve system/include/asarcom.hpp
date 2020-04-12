@@ -6,6 +6,7 @@
 #include <CRC32.h>
 
 #define BUFF_SIZE 512
+#define ESP8266_BAUD_RATE 74880
 
 // Instructions to be passed in the message for the robot.
 enum instructions {goToStation, rotateEast, rotateWest, approachShelf, leaveShelf, storageTray, retrieveTray, backToBase};
@@ -28,7 +29,7 @@ public:
     void readStream();
     void addInstruction(Command);
     void stopProcess();
-    bool read();
+    bool read(LinkedList<char>&);
     Command interpretInput(bool& _validChecksum);
     int calculateChecksum(Command);
 };
