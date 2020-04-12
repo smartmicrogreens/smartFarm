@@ -66,7 +66,6 @@ bool ASARCOM::read(String& _buffer) {
         {
             input = Serial1.readStringUntil('%');
             checksum = Serial1.readStringUntil('>');
-            //Serial.println(startSeq + "c" + input + "%" + checksum + ">");
             Serial.println(input);
 
             for(unsigned int i=0; i<input.length(); i++)
@@ -75,14 +74,36 @@ bool ASARCOM::read(String& _buffer) {
             checksumValid = crc.finalize() == (uint32_t)checksum.toInt();
 
             // CHECKSUM VALIDATION CONTROL
-            //Serial.print("ChecksumIsValid? = ");
-            //Serial.println(checksumValid ? "TRUE" : "FALSE");
+            //Serial.println("ChecksumIsValid? = " + 
+            //                checksumValid ? "TRUE" : "FALSE");
             //Serial.print(crc.finalize(), HEX);
             //Serial.print(" = ");
             //Serial.println((uint32_t)checksum.toInt(), HEX);
-            
+
             crc.reset();
         }
         return checksumValid;
     }
+    else return checksumValid;
+}
+
+void ASARCOM::write(String _body) {
+    String output;
+    CRC32 crc;
+    crc.reset();
+    // Iterate while udpate CRC value per value 
+    for(unsigned int i=0; i<_body.length(); i++)
+    {
+        crc.update( (uint8_t) _body.charAt(i) ); 
+        Serial.print(_body.charAt(i));
+    }
+
+    String checksum(crc.finalize());    // Calculate checksum once all values were included.
+    output.concat("abc" + _body + "%" + checksum + ">");    // Concatenate to achieve the full chain with begin, middle and end characters.
+    // Serial.println("OUTPUT -+ " + output);
+    // Serial.print("(Arduino) Checksum = (String) ");
+    // Serial.print((uint32_t)checksum.toInt(), HEX);
+    // Serial.print(" / (CRC)");
+    // Serial.println(crc.finalize(), HEX);
+    Serial1.print(output);
 }

@@ -29,6 +29,7 @@ public:
     void displayConnectedUsers();
     void updateIOStreams();
     String encapsulate(String);
+    String decapsulate(String, bool&);
 };
 
 #endif

@@ -59,19 +59,26 @@ void ASARServer::updateIOStreams() {
 
     // Update for outcoming messages(From Serial port to WiFi)
     // Checks UART data
+    bool validChecksum = false;
     size_t len = std::min((size_t)Serial.available(), maxToTcp);
     len = std::min(len, (size_t)STACK_PROTECTOR);
     if (len) {
         uint8_t sbuf[len];
-        size_t serial_got = Serial.readBytes(sbuf, len);
+        String strbuffer = Serial.readString();
+        // size_t serial_got = Serial.readBytes(sbuf, len);
+        // String strbuf((char*) sbuf); 
+        strbuffer = decapsulate(strbuffer, validChecksum);
         // push UART data to all connected telnet clients
         // if client.availableForWrite() was 0 (congested)
         // and increased since then,
         // ensure write space is sufficient:
-        if (clients->availableForWrite() >= serial_got) {
-            size_t tcp_sent = clients->write(sbuf, serial_got);
-            if (tcp_sent != len)  Serial.printf("len mismatch: available:%zd serial-read:%zd tcp-write:%zd\n", len, serial_got, tcp_sent);
-        }
+        if(validChecksum) {
+            //if (clients->availableForWrite() >= serial_got) {
+                //size_t tcp_sent = clients->write(sbuf, serial_got);
+                size_t tcp_sent = clients->println(strbuffer);
+                //if (tcp_sent != len)  Serial.printf("len mismatch: available:%zd serial-read:%zd tcp-write:%zd\n", len, serial_got, tcp_sent);
+            //}
+        } else clients->println("Error: Invalid checksum.");
     }
 }
 
@@ -79,9 +86,44 @@ String ASARServer::encapsulate(String _body) {
     String output;
     CRC32 crc;
     crc.reset();
+    // Iterate while udpate CRC value per value 
     for(unsigned int i=0; i<_body.length(); i++)
-        crc.update( (uint8_t) _body.charAt(i) );
-    String checksum(crc.finalize());
-    output.concat("abc" + _body + "%" + checksum + ">");
+        crc.update( (uint8_t) _body.charAt(i) );  
+
+    String checksum(crc.finalize());    // Calculate checksum once all values were included.
+    output.concat("abc" + _body + "%" + checksum + ">");    // Concatenate to achieve the full chain with begin, middle and end characters.
     return output;
+}
+
+String ASARServer::decapsulate(String _package, bool& _validChecksum) {
+    String output, checksum;
+    uint32_t checksumVal;
+    CRC32 crc;
+    crc.reset();
+
+    if(_package.startsWith("abc"))
+    {
+        output.concat(_package.substring( _package.indexOf("c")+1,      // Substring between "abc" ...
+                                          _package.indexOf("%")));      // and "%" --> returns the BODY
+
+        checksum.concat(_package.substring( _package.indexOf("%")+1,    // Substring between "%" ...
+                                            _package.indexOf(">")));    // and ">" --> returns the CHECKSUM
+
+        checksumVal = (uint32_t) checksum.toInt();
+        
+        for(unsigned int i=0; i<output.length(); i++)   // Calculating Checksum based on the data to compare to received value.
+            crc.update( (uint8_t) output.charAt(i) );
+
+
+        _validChecksum = crc.finalize() == checksumVal; // Validate if checksum matches.
+        
+        // clients->print("Checksum = (Ard) ");
+        // clients->print(checksumVal, HEX);
+        // clients->print(" / (ESP) ");
+        // clients->println(crc.finalize(), HEX);
+        
+        if(_validChecksum) return output;                   // If checksum is correct, return the string
+        else return "(ESP8266) Checksum is NOT valid.";     // Otherwise, return null string.
+    }
+    else return "";
 }

@@ -31,6 +31,7 @@ public:
     void stopProcess();
     bool read(LinkedList<char>&);
     bool read(String&);
+    void write(String);
     Command interpretInput(bool& _validChecksum);
     int calculateChecksum(Command);
 };
