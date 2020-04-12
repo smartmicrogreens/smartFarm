@@ -1,0 +1,3 @@
+[submodule "Layer 3 - Storage and retrieve system/libucomm"]
+	path = Layer 3 - Storage and retrieve system/libucomm
+	url = https://github.com/xqms/libucomm.git
