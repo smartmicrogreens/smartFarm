@@ -8,13 +8,13 @@
 #define STACK_PROTECTOR 512
 #define TELNET_PORT 23
 #define BAUD_RATE 74800
-#define START_C "abc"
-#define END_C '>'
 
 class ASARServer {
 private:
     const char* ssid = "testing";
     const char* password = "1234567890";
+    const String TO_ARD_START_C = "ard";
+    const String FROM_ARD_START_C = "esp";
     //const size_t STACK_PROTECTOR = 512;
 
     WiFiServer* server;
