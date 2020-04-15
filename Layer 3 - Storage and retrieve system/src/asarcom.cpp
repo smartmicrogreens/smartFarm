@@ -55,14 +55,14 @@ bool ASARCOM::read(LinkedList<char>& _buffer) {
     }
 }
 
-bool ASARCOM::read(String& _buffer) {
+void ASARCOM::read(String& _buffer, bool& _validChecksum) {
     String startSeq, input, checksum;
-    bool checksumValid = false;
+
     //crc.reset();
     if(Serial1.available() > 0) 
     {
-        startSeq = Serial1.readStringUntil('c');   // Read once and check if is begin-of-line character.
-        if(startSeq == "ab") 
+        //startSeq = Serial1.readStringUntil('d');   // Read once and check if is begin-of-line character.
+        if(Serial1.readStringUntil('d') == "ar") 
         {
             input = Serial1.readStringUntil('%');
             checksum = Serial1.readStringUntil('>');
@@ -71,7 +71,7 @@ bool ASARCOM::read(String& _buffer) {
             for(unsigned int i=0; i<input.length(); i++)
                 crc.update( (uint8_t) input.charAt(i) );
 
-            checksumValid = crc.finalize() == (uint32_t)checksum.toInt();
+            _validChecksum = crc.finalize() == (uint32_t)checksum.toInt();
 
             // CHECKSUM VALIDATION CONTROL
             //Serial.println("ChecksumIsValid? = " + 
@@ -82,9 +82,8 @@ bool ASARCOM::read(String& _buffer) {
 
             crc.reset();
         }
-        return checksumValid;
     }
-    else return checksumValid;
+
 }
 
 void ASARCOM::write(String _body) {
@@ -99,7 +98,7 @@ void ASARCOM::write(String _body) {
     }
 
     String checksum(crc.finalize());    // Calculate checksum once all values were included.
-    output.concat("abc" + _body + "%" + checksum + ">");    // Concatenate to achieve the full chain with begin, middle and end characters.
+    output.concat("esp" + _body + "%" + checksum + ">");    // Concatenate to achieve the full chain with begin, middle and end characters.
     // Serial.println("OUTPUT -+ " + output);
     // Serial.print("(Arduino) Checksum = (String) ");
     // Serial.print((uint32_t)checksum.toInt(), HEX);

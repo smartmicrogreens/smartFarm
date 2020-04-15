@@ -58,7 +58,7 @@ void ASARServer::updateIOStreams() {
     
     size_t availableOnSerial = Serial.available();
     if(availableOnSerial <= STACK_PROTECTOR) {
-        String buffer = Serial.readStringUntil('>');
+        String buffer = Serial.readString();
         if(clients->availableForWrite() >= availableOnSerial  &&  buffer.length() <= STACK_PROTECTOR) 
             size_t tcp_sent = clients->print(buffer);
     }
