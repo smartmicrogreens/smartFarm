@@ -9,10 +9,18 @@
 #define ESP8266_BAUD_RATE 74880
 
 // Instructions to be passed in the message for the robot.
-enum instructions {goToStation, rotateEast, rotateWest, approachShelf, leaveShelf, storageTray, retrieveTray, backToBase};
+enum instructions { goToStation, 
+                    rotateEast, 
+                    rotateWest, 
+                    approachShelf, 
+                    leaveShelf, 
+                    storageTray, 
+                    retrieveTray, 
+                    backToBase
+                    };
 
 typedef struct {
-    char instruction;
+    uint8_t instruction;
     String body;
 } Command;
 
@@ -30,10 +38,9 @@ public:
     void addInstruction(Command);
     void stopProcess();
     bool read(LinkedList<char>&);
-    void read(String&, bool&);
+    void read(uint8_t& instruction, String&, bool&);
     void write(String);
     Command interpretInput(bool& _validChecksum);
-    int calculateChecksum(Command);
 };
 
 #endif // ASARCOM_HPP

@@ -26,38 +26,52 @@ ASARServer::ASARServer() {
 }
 void ASARServer::displayConnectedUsers() {
     
-    if (server->hasClient())  // If User is waiting to connect
+    if (server->hasClient()) {  // If User is waiting to connect
         if (!clients->connected()) { // Check if no user is connected
             *clients = server->available(); // Then add the one waiting to connect
             Serial.print(encapsulate("Client connected - IP: "));
             Serial.println(encapsulate(clients->remoteIP().toString()));
         }
+    }
 }
 
 void ASARServer::updateIOStreams() {
-    dataFlag = false;
-    // Update for incoming messages(From WiFi to Serial port)
-    if(clients->available() && Serial.availableForWrite() > 0) dataFlag = true;
-    String body;
+    //dataFlag = false;
+    // body.clear(); // Test on THISSSSSSS
 
+    // // Update for incoming messages(From WiFi to Serial port)
+    // // if(clients->available() && Serial.availableForWrite() > 0) dataFlag = true;
+
+    // while (clients->available() && Serial.availableForWrite() > 0) {
+    //     // working char by char is not very efficient
+    //     //dataFlag = true;
+    //     body = clients->read();
+    //     //Serial.print(body);
+    //     //dataFlag = true;
+
+    //     maxToTcp = 0;   // Max data to send by TCP
+    //     if (clients) {
+    //         size_t afw = clients->availableForWrite();
+    //         if (afw) {
+    //             if (!maxToTcp) maxToTcp = afw;
+    //             else maxToTcp = std::min(maxToTcp, afw);
+    //         } 
+    //     }
+    // }
+    // if(dataFlag) Serial.print(body);
+
+    // if (server->hasClient())
+    //     clients = new WiFiClient( server->available() );
+
+    size_t maxToTcp = 0;
     while (clients->available() && Serial.availableForWrite() > 0) {
-        // working char by char is not very efficient
-        body.concat((char)clients->read());
-        dataFlag = true;
-
-        maxToTcp = 0;   // Max data to send by TCP
-        if (clients) {
-            size_t afw = clients->availableForWrite();
-            if (afw) {
-                if (!maxToTcp) maxToTcp = afw;
-                else maxToTcp = std::min(maxToTcp, afw);
-            } 
-        }
+      // working char by char is not very efficient
+      Serial.print(clients->readString());
     }
-    if(dataFlag) Serial.print(encapsulate(body));
+
     
     size_t availableOnSerial = Serial.available();
-    if(availableOnSerial <= STACK_PROTECTOR) {
+    if(availableOnSerial <= STACK_PROTECTOR && availableOnSerial > 0) {
         String buffer = Serial.readString();
         if(clients->availableForWrite() >= availableOnSerial  &&  buffer.length() <= STACK_PROTECTOR) 
             size_t tcp_sent = clients->print(buffer);

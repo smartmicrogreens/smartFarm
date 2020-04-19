@@ -21,6 +21,7 @@ private:
     WiFiClient* clients;
     size_t maxToTcp;
     bool dataFlag;
+    String body;
     //CRC32 crc;
     //SoftwareSerial* logger;
 
