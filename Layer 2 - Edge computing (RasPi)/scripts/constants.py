@@ -23,3 +23,6 @@ HOST_DB = "localhost"
 USER_DB = "root"
 PASSWORD_DB = ""
 DB_NAME = "nomina"
+
+# Constants associated with MQTT protocol
+MQTT_BROKER = "localhost"

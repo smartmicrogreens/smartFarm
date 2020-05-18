@@ -1,5 +1,23 @@
+************* Instalar pip (administrador de paquetes de Python) *************
+sudo apt install python-pip
+
 ****** Instalar PySerial para comunicación por puerto serie ******
 pip install pyserial
 
 ****** Instalar módulo administrador de base de datos MySQL ******
 pip install mysql-connector
+
+****** Instalar broker MQTT (Mosquitto) ******
+sudo wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
+sudo apt-key add mosquitto-repo.gpg.key
+cd /etc/apt/sources.list.d/
+sudo wget http://repo.mosquitto.org/debian/mosquitto-stretch.list	# Cambiar por la versión que se use	
+sudo -i
+apt-get update	
+apt-get install mosquitto
+
+****** Instalar cliente MQTT (Mosquitto-client) ******	
+apt-get install mosquitto-clients
+
+****** Instalar módulo para comunicarse a través del protocolo MQTT ******
+pip install paho-mqtt
