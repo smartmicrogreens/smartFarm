@@ -1,0 +1,34 @@
+body.optionsBody {
+    background-color: #E6F2FF;
+}
+
+.container.options-container {
+    margin-top: 6%;
+}
+
+.card.options-card {
+    padding: 10px 0px 10px;
+    background-color: #F4F4F4;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    /* Para que funcione en otros navegadores */
+    -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.options-title {
+    text-align: center;
+}
+
+.img-fluid.logo-img {
+    padding: 0 2rem 2rem;
+    margin: auto;
+    display: block;
+}
+
+.btn.options-btn {
+    color: white;
+    background-color: #D64829;
+    width: 100%;
+    /*font-weight: 500;*/
+    margin-bottom: 1.2rem;
+}
