@@ -10,3 +10,7 @@ function to_tables () {
 function to_program () {
     location.href = "/program";
 }
+
+function to_home () {
+    location.href = "/";
+}

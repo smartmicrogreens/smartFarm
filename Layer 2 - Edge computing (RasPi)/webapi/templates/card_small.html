@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <!-- Meta tags utilizados -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap - CSS -->
+    <link rel="stylesheet" href="/static/bootstrap4.4/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="/static/bootstrap4.4/css/bootstrap.min.css">
+    <!-- Mi CSS, último para poder sobreescribir los atributos que quiera -->
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- Título de la página -->
+    <title>Home</title>
+  </head>
+    
+  <body class="optionsBody">
+      
+    <div class="container options-container">
+        <div class="row">
+            <!-- Si no aclaramos el ancho, es automático -->
+            <div class="col"></div>
+            <div class="col-sm-12 col-md-6">
+                <div class="card options-card">
+                    <div class="card-body">
+                      <!-- Título -->
+                      <h2 class="options-title">{{ title }}</h2>
+
+                      {% if page == 'index' %}
+
+                      <!-- Logo -->
+                      <img class="img-fluid logo-img" src="/static/assets/logo.png">
+
+                      <!-- Botones -->
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_sensors()">Hacer medición</button><br>
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_tables()">Ver tablas</button><br>
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_program()">Programar tareas</button><br>
+
+                      {% elif page == 'sensors' %}
+                      
+                      <!-- Lista de sensores -->
+                      <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Elegir sensor
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" href="/read/<temperatura>">Temperatura</a>
+                          <a class="dropdown-item" href="/read/<humedad>">Humedad</a>
+                          <a class="dropdown-item" href="/read/<caudal>">Caudal</a>
+                        </div>
+                      </div>
+
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_home()">Volver al inicio</button><br>
+
+                      {% elif page == 'read_sensor' %}
+
+                      <h2>{{ response }}</h2>
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_sensors()">Volver a sensores</button><br>
+                      <button type="button" class="btn btn-primary options-btn" onclick="to_home()">Volver al inicio</button><br>
+
+                      {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+
+    <!-- Bootstrap - jQuery, Popper.js, Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="/static/bootstrap4.4/js/bootstrap.min.js"></script>
+
+    <!-- Mi(s) script(s) -->
+    <script src="/static/js/routing.js"></script>
+
+  </body>
+</html>
