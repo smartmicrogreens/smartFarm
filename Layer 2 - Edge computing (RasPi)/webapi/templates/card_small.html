@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="/static/style.css">
 
     <!-- Título de la página -->
-    <title>Home</title>
+    <title>{{ title }}</title>
   </head>
     
   <body class="optionsBody">
@@ -40,22 +40,28 @@
                       {% elif page == 'sensors' %}
                       
                       <!-- Lista de sensores -->
+                      <!--
                       <div class="dropdown">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Elegir sensor
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          {% for sensor in sensores %}
-                          <a class="dropdown-item" href={{"/read/<" + sensor + ">"}}>{{ sensor }}</a>
+                          {% for route, sensor in sensors.items() %}
+                          <a class="dropdown-item" href={{"/read/<" + route + ">"}}>{{ sensor }}</a>
                           {% endfor %}
                         </div>
                       </div>
+                      -->
+
+                      {% for route, sensor in sensors.items() %}
+                      <br><a class="sensors-links" href={{"/read/<" + route + ">"}}>{{ sensor }}</a>
+                      {% endfor %}
 
                       <button type="button" class="btn btn-primary options-btn" onclick="to_home()">Volver al inicio</button><br>
 
                       {% elif page == 'read_sensor' %}
 
-                      <h2>{{ response }}</h2>
+                      <h6>{{ response }}</h6>
                       <button type="button" class="btn btn-primary options-btn" onclick="to_sensors()">Volver a sensores</button><br>
                       <button type="button" class="btn btn-primary options-btn" onclick="to_home()">Volver al inicio</button><br>
 

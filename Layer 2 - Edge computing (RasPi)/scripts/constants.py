@@ -22,7 +22,7 @@ ACT_INSPECT = 0x01
 HOST_DB = "localhost"
 USER_DB = "root"
 PASSWORD_DB = ""
-DB_NAME = "nomina"
+DB_NAME = "db_test"
 
 # Constants associated with MQTT protocol
 MQTT_BROKER = "localhost"

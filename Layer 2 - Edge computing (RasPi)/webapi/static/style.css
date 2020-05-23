@@ -33,3 +33,23 @@ body.optionsBody {
     margin-top: 1.2rem;
     margin-bottom: 1.2rem;
 }
+
+a.sensors-links {
+    margin: 0.3rem;
+}
+
+a.sensors-links:link, a.sensors-links:visited {
+    background-color: white;
+    color: black;
+    border: 2px solid green;
+    padding: 5px 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+  }
+  
+  a.sensors-links:hover, a.sensors-links:active {
+    background-color: green;
+    color: white;
+  }
