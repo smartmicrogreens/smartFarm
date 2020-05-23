@@ -26,7 +26,8 @@ def index():
 def sensors():
    templateData = {
       'page' : 'sensors',
-      'title' : 'Realizar medición'
+      'title' : 'Realizar medición',
+      'sensores' : [ 'Temperatura', 'Humedad', 'Caudal', 'Luminosidad' ]
     }
    return render_template('card_small.html', **templateData)
 
@@ -34,7 +35,7 @@ def sensors():
 @app.route('/read/<sensor>')
 def readSensor(sensor):
    nombre_sensor = sensor[1:-1]
-   unidades = { 'temperatura' : '[°C]', 'humedad' : '[%]', 'caudal' : '[l/min]' }
+   unidades = { 'Temperatura' : '[°C]', 'Humedad' : '[%]', 'Caudal' : '[l/min]', 'Luminosidad' : '[lm]' }
    try:
       #### AGREGAR MEDICIÓN DEL SENSOR ####
 

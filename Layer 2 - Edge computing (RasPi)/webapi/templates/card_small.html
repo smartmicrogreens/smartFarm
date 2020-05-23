@@ -45,9 +45,9 @@
                           Elegir sensor
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                          <a class="dropdown-item" href="/read/<temperatura>">Temperatura</a>
-                          <a class="dropdown-item" href="/read/<humedad>">Humedad</a>
-                          <a class="dropdown-item" href="/read/<caudal>">Caudal</a>
+                          {% for sensor in sensores %}
+                          <a class="dropdown-item" href={{"/read/<" + sensor + ">"}}>{{ sensor }}</a>
+                          {% endfor %}
                         </div>
                       </div>
 
