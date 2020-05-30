@@ -1,3 +1,0 @@
-[console_scripts]
-tastehood_server = tastehood_server.cli.main:main
-
