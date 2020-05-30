@@ -3,18 +3,26 @@ from sqlalchemy import Column, Integer, String, Text, ForeignKey, Enum, Float, B
 from base import Base
 
 class tb_env_data(Base):
-    """ Datalogging table for raw sensor data  """
+    """ Datalogging table for raw environment and consumption sensor data  """
 
     __tablename__ = 'env_data'
 
+    ## --- TIMESTAMP --- ##
+    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
+
+    ## --- TIMESTAMP --- ##
     date = Column('date', TIMESTAMP(), nullable=False,
                   comment='Timestamp with date and time of logged data.')
-    temperature = Column('temperature', Integer(), nullable=False,
+
+    ## --- Enviroment sensor data --- ##
+    temperature = Column('temperature', Float(), nullable=False,
                          comment='Node temperature')
-    humidity = Column('humidity', Integer(), nullable=False,
+    humidity = Column('humidity', Float(), nullable=False,
                       comment='Node humidity')
-    soil_moisture = Column('soil_moisture', Integer(), nullable=False,
+    soil_moisture = Column('soil_moisture', Float(), nullable=False,
                            comment='soil_moisture')
+
+    ## --- Consumption lvl sensor data --- ##
     water_consumption = Column('water_consumption', Float(),
                                comment='Water consumption in L/hour. ')
     energy_consumption = Column('energy_consumption', Float(),
