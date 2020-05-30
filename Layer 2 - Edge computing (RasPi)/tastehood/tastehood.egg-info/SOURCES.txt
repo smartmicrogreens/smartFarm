@@ -1,0 +1,12 @@
+setup.py
+tastehood.egg-info/PKG-INFO
+tastehood.egg-info/SOURCES.txt
+tastehood.egg-info/dependency_links.txt
+tastehood.egg-info/entry_points.txt
+tastehood.egg-info/not-zip-safe
+tastehood.egg-info/requires.txt
+tastehood.egg-info/top_level.txt
+tastehood_server/__init__.py
+tastehood_server/server.py
+tastehood_server/cli/__init__.py
+tastehood_server/cli/main.py
