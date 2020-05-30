@@ -1,0 +1,55 @@
+body.optionsBody {
+    background-color: #E6F2FF;
+}
+
+.container.options-container {
+    margin-top: 6%;
+}
+
+.card.options-card {
+    padding: 10px 0px 10px;
+    background-color: #F4F4F4;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    /* Para que funcione en otros navegadores */
+    -webkit-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.options-title {
+    text-align: center;
+}
+
+.img-fluid.logo-img {
+    padding: 0 2rem 2rem;
+    margin: auto;
+    display: block;
+}
+
+.btn.options-btn {
+    color: white;
+    background-color: #D64829;
+    width: 100%;
+    /*font-weight: 500;*/
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+a.sensors-links {
+    margin: 0.3rem;
+}
+
+a.sensors-links:link, a.sensors-links:visited {
+    background-color: white;
+    color: black;
+    border: 2px solid green;
+    padding: 5px 17px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+  }
+  
+  a.sensors-links:hover, a.sensors-links:active {
+    background-color: green;
+    color: white;
+  }
