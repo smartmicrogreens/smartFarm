@@ -38,7 +38,7 @@ if __name__ == '__main__':
               'uvicorn'
           ],
           entry_points={
-              'console_scripts': ['mlflow=tastehood_server.cli.main:main', ]
+              'console_scripts': ['tastehood_server=tastehood_server.cli.main:main', ]
           },
           python_requires='>=3.6',)
 
