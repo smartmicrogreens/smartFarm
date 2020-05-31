@@ -16,8 +16,10 @@ def get_session(do_create=True):
     when this function is envoked. Automatically commit changes to database and rollback if an error occurs.
     Example:
 
-    >> with get_session() as session:
-    >>      # do something with session
+    >>> with get_session() as session:  # create any tables that are not yet existent
+    >>>         from tastehood_server.databases.mg_db_units import Node
+    >>>         node = Node(temperature_th=27, humidity_th=20)  # create instance of data
+    >>>         session.add(node)  # add data to database
 
     :param do_create: whether to create tables if they don't exists, default True
     :return:
