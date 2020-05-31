@@ -11,7 +11,7 @@ class EnvironmentData(Base):
 
     ## --- TIMESTAMP --- ##
     id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-    iot_identification_id = Column('iot_identification_id', String(128), ForeignKey('iot_devices.identification_id'),
+    iot_identification_id = Column(String(128), ForeignKey('iot_devices.id'),
                                    nullable=False)
     iot_device = relationship('IotDevice')
     ## --- TIMESTAMP --- ##

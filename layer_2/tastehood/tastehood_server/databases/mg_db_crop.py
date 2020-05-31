@@ -7,12 +7,10 @@ class CropType(Base):
     """Table containing different crop types and key information about them."""
     __tablename__ = 'crop_types'
 
-    ## --- Keys --- ##
-    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-    tray = relationship('Tray', back_populates='crop')
     ## --- Crop names --- ##
-    crop_name = Column('crop_name', String(64), nullable=False,
+    crop_name = Column(String(128), primary_key=True, nullable=False,
                        comment='Date the tray is inserted in the rack.')
+    tray = relationship('Tray', back_populates='crop')
 
     ## --- Preferred media --- ##
     preferred_media = Column('preferred_media', String(64), nullable=False,
