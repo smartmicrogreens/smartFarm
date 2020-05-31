@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Float, TIMESTAMP
+from sqlalchemy import Column, Integer, Float, TIMESTAMP, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 from tastehood_server.databases.base import Base
 
@@ -10,7 +11,9 @@ class EnvironmentData(Base):
 
     ## --- TIMESTAMP --- ##
     id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-
+    iot_identification_id = Column(String(128), ForeignKey('iot_devices.id'),
+                                   nullable=False)
+    iot_device = relationship('IotDevice')
     ## --- TIMESTAMP --- ##
     date = Column('date', TIMESTAMP(), nullable=False,
                   comment='Timestamp with date and time of logged data.')

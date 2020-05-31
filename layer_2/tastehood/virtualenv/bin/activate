@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/Users/robin.hornak/Documents/smartFarm/layer_2_raspberry_pi/tastehood/virtualenv"
+VIRTUAL_ENV="/Users/robin.hornak/Documents/smartFarm/layer_2/tastehood/virtualenv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
