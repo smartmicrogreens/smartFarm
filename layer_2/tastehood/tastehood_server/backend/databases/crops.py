@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
 from sqlalchemy.orm import relationship
-from tastehood_server.databases.base import Base
+from tastehood_server.backend.databases.base import Base
 
 
 class CropType(Base):

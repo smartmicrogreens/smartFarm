@@ -1,7 +1,10 @@
-from sqlalchemy import Column, Integer, ForeignKey, Float, DateTime, Time, Boolean, String, ForeignKeyConstraint
+from sqlalchemy import (Column, Integer, ForeignKey, Float, DateTime, Time, Boolean, String, ForeignKeyConstraint,
+                        TIMESTAMP)
 from sqlalchemy.orm import relationship
 
-from tastehood_server.databases.base import Base
+
+from tastehood_server.backend.databases import Base
+from tastehood_server.backend.databases.iot_devices import IotDevice
 
 
 class Node(Base):
@@ -40,7 +43,7 @@ class Shelf(Base):
                       comment='Time to turn off shelf light..')
 
     ## --- Moisture Threshold --- ##
-    soil_moisture_th = Column('soil_moisture_threshold', Integer(), nullable=False,
+    soil_moisture_th = Column(Integer(), nullable=False,
                               comment='This threshold will define when the irrigation system should act. '
                                       'Default value = .')
 
@@ -52,48 +55,39 @@ class Slot(Base):
     shelf_id = Column(String(128), ForeignKey('shelf.id'), nullable=False)
     shelf = relationship('Shelf', back_populates='slots')
     index = Column(Integer(), nullable=False, comment='The column index of where in the shelf the slot is')
-    available = Column(Boolean(), comment='Whether a given slot is available')
-    iot_devices = relationship('IotDevice', back_populates='slot')
+    available = Column(Boolean(), default=True, comment='Whether a given slot is available')
+    iot_devices = relationship(IotDevice, back_populates='slot')
+    n_trays = Column(Integer(), default=0,
+                     comment='Number of trays currently in the slot. Possible to have multiple trays '
+                             'for germinations in one slot')
 
 
 class Tray(Base):
-    """ Main table containing information of the current crops being cultavated. It has valuable status data. """
-
+    """Main table containing information of the current crops being cultavated. It has valuable status data."""
     __tablename__ = 'trays'
-    ## --- Keys --- ##
-    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
 
-    shelf_id = Column(String(128), nullable=False)
-    slot_index = Column(Integer(), nullable=False)
+    id = Column(String(128), primary_key=True, nullable=False, comment='A unique id for a tray.')
+    shelf_id = Column(String(128), nullable=False, comment='The shelf id where tray is inserted.')
+    slot_index = Column(Integer(), nullable=False, comment='The index of the slot where tray is inserted, '
+                                                           'starting with 0')
     slot = relationship('Slot')
     __table_args__ = (ForeignKeyConstraint((shelf_id, slot_index),
                                            (Slot.shelf_id, Slot.index)),
                       {})
-    crop_name = Column(String(128), ForeignKey('crop_types.crop_name'), nullable=False)
+    crop_name = Column(String(128), ForeignKey('crop_types.crop_name'), nullable=False,
+                       comment='The name of the crop being grown in this tray')
     crop = relationship('CropType', foreign_keys=[crop_name])
 
-    ## --- Dates --- ##
-    grow_start_date = Column('grow_start_date', DateTime(), nullable=False,
+    grow_start_date = Column(TIMESTAMP(),
                              comment='Date the tray is inserted in the rack.')
-    estimated_germination_date = Column('estimated_germination_date', DateTime(), nullable=False,
-                                        comment='Date when germination is estimated to be over.')
-    germination_end_date = Column('germination_end_date', DateTime(), nullable=False,
+    germination_end_date = Column('germination_end_date', DateTime(), nullable=True,
                                   comment='Actual date when tray was moved to next station.')
-    estimated_harvest_date = Column('estimated_harvest_date', DateTime(), nullable=False,
-                                    comment='Estimated date when crop can be harvested.')
-    harvest_date = Column('harvest_date', DateTime(), nullable=False,
+    harvest_date = Column(DateTime(), nullable=True,
                           comment='Actual date when crop was harvested.')
 
-    ## --- Weights --- ##
-    initial_tray_weight = Column('initial_tray_weight', Float(), nullable=False,
+    initial_tray_weight = Column(Float(), nullable=False,
                                  comment='Tray weight before inserting in the rack. '
                                          'This should include only plastic tray and substrate, '
                                          'nothing else(No seeds also).')
-    final_tray_weight = Column('final_tray_weight', Float(), nullable=False,
+    final_tray_weight = Column(Float(), nullable=True,
                                comment='Tray weight right before harvesting. ')
-
-    ## --- Cost and profit --- ##
-    unit_cost = Column('unit_cost', Float(), nullable=False,
-                       comment='Total costs for growing one microgreens tray/unit.')
-    unit_profit = Column('unit_profit', Float(), nullable=False,
-                         comment='Profit per tray/unit.')
