@@ -41,19 +41,3 @@ if __name__ == '__main__':
               'console_scripts': ['tastehood_server=tastehood_server.cli.main:main', ]
           },
           python_requires='>=3.6',)
-
-
-
-# switch light -
-# PUT request
-# turn on airconditioner
-# turn on humidifier
-
-# insert tray -
-# finish germination
-# change location
-# take tray
-
-# GET
-# get humidity -
-# tastehood/humidity/2
