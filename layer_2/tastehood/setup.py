@@ -35,7 +35,8 @@ if __name__ == '__main__':
               'sqlalchemy',
               'fastapi',
               'click',
-              'uvicorn'
+              'uvicorn',
+              'pydantic'
           ],
           entry_points={
               'console_scripts': ['tastehood_server=tastehood_server.cli.main:main', ]

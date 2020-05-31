@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, ForeignKey, Float, DateTime, Time
+from sqlalchemy import Column, Integer, ForeignKey, Float, DateTime, Time, Boolean
+from sqlalchemy.orm import relationship
 
 from tastehood_server.databases.base import Base
 
 
 class Node(Base):
-    """ Creates the table that will contain node(Container or what ever space you want) information """
+    """Creates the table that will contain node(Container or what ever space you want) information."""
 
     __tablename__ = 'node'
 
@@ -19,6 +20,8 @@ class Node(Base):
                          comment='Over this threshold, start mechanism to reduce humidity. '
                                  'Default value should be 40.')
 
+    shelves = relationship('Shelf', back_populates='node')
+
 
 class Shelf(Base):
     """ Creates the table that will contain information for each shelf as a unit """
@@ -28,7 +31,8 @@ class Shelf(Base):
     ## --- Keys --- ##
     id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
     id_node = Column('node_id', Integer(), ForeignKey('node.id'), nullable=False)
-
+    node = relationship('Node', back_populates='shelves')
+    slots = relationship('Slot', back_populates='shelf')
     ## --- Light times --- ##
     sunrise_t = Column('sunrise_time', Time(), nullable=False,
                        comment='Time to turn on shelf light.')
@@ -41,14 +45,28 @@ class Shelf(Base):
                                       'Default value = .')
 
 
-class Trays(Base):
+class Slot(Base):
+    """Slits inside each shelf."""
+    __tablename__ = 'slots'
+    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
+    shelf_id = Column('shelf_id', Integer(), ForeignKey('shelf.id'), nullable=False)
+    shelf = relationship('Shelf', back_populates='slots')
+    index = Column('index', Integer(), nullable=False)
+    available = Column('status', Boolean(), comment='Whether a given slot is available')
+    iot_devices = relationship('IotDevice', back_populates='slot')
+
+
+class Tray(Base):
     """ Main table containing information of the current crops being cultavated. It has valuable status data. """
 
     __tablename__ = 'trays'
     ## --- Keys --- ##
     id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-    shelf_id = Column('shelf_id', Integer(), ForeignKey('shelf.id'), nullable=False)
-    crop_id = Column('crop_id', Integer(), ForeignKey('crop_types.id'), nullable=False)
+
+    slot_id = Column('slot_id', Integer(), ForeignKey('slots.id'), nullable=False)
+    slot = relationship('Slot', foreign_keys=[slot_id])
+    crop_name = Column('crop_id', Integer(), ForeignKey('crop_types.crop_name'), nullable=False)
+    crop = relationship('CropType', foreign_keys=[crop_name])
 
     ## --- Dates --- ##
     grow_start_date = Column('grow_start_date', DateTime(), nullable=False,

@@ -1,15 +1,15 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
-
+from sqlalchemy.orm import relationship
 from tastehood_server.databases.base import Base
 
 
-class CropTypes(Base):
-    """ Table containing different crop types and key information about them """
+class CropType(Base):
+    """Table containing different crop types and key information about them."""
     __tablename__ = 'crop_types'
 
     ## --- Keys --- ##
     id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-
+    tray = relationship('Tray', back_populates='crop')
     ## --- Crop names --- ##
     crop_name = Column('crop_name', String(64), nullable=False,
                        comment='Date the tray is inserted in the rack.')
