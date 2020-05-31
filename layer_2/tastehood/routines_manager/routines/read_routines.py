@@ -1,6 +1,6 @@
 from routines_manager.core.module_connect import connect_to_module
 from routines_manager.core.read_socket import send
-from routines_manager.core.instructions import ENV_READ_STATUS
+from routines_manager.core.constants import ENV_READ_STATUS
 from routines_manager.core.iot_device import IotDevice
 
 def scan_environment(_host):

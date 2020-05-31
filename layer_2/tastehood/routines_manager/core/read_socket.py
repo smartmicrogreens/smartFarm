@@ -1,7 +1,7 @@
 import sys
 import select
 
-def send(_socket: 'socket', _instruction: str ):
+def send(_socket: 'socket', _instruction: bytes ):
     """ Send: Sends an instruction and returns the reply from device """
     _socket.send(_instruction)
 
@@ -20,4 +20,5 @@ def send(_socket: 'socket', _instruction: str ):
             if not data:
                 return 99
             else:
+                #print("last data: " + str(data))
                 return data
