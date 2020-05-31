@@ -1,6 +1,9 @@
 """Tastehood server."""
 from fastapi import FastAPI
 
+from tastehood_server.backend import funcs
+from tastehood_server.apis.schema import NewTrayInsert
+
 app = FastAPI()
 
 
@@ -19,6 +22,8 @@ app = FastAPI()
 # tastehood/humidity/2
 
 
-@app.get('/')
-def base():
-    return {'hey': 'man'}
+@app.put('/insert_tray/')
+def insert_tray(new_tray: NewTrayInsert):
+    funcs.insert_tray(new_tray)
+
+# @app.put('/add_node')
