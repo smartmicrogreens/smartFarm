@@ -11,7 +11,9 @@ def connect_to_module(_host, _port):
         return False
     return client
 
-def disconnect_from_module(_client):
+def disconnect_from_module(_client: socket):
     # Regarding shutdown, refer to https://docs.python.org/3/howto/sockets.html in "Disconnecting"
-    _client.shutdown()
+    _client.shutdown(0)
     _client.close()
+
+

@@ -5,7 +5,7 @@ from routines_manager.core.module_connect import connect_to_module
 # - By sending the instruction '0', the ESP modulo will reply with temperature and humidity
 # SCAN_INSTR = b'<0>'
 
-def send(_socket, _instruction):
+def send(_socket, _instruction: str):
     """ Send: Sends an instruction and returns the reply from device """
     _socket.send(_instruction)
 
