@@ -2,7 +2,9 @@ from sqlalchemy import (Column, Integer, ForeignKey, Float, DateTime, Time, Bool
                         TIMESTAMP)
 from sqlalchemy.orm import relationship
 
+
 from tastehood_server.backend.databases import Base
+from tastehood_server.backend.databases.iot_devices import IotDevice
 
 
 class Node(Base):
@@ -41,7 +43,7 @@ class Shelf(Base):
                       comment='Time to turn off shelf light..')
 
     ## --- Moisture Threshold --- ##
-    soil_moisture_th = Column('soil_moisture_threshold', Integer(), nullable=False,
+    soil_moisture_th = Column(Integer(), nullable=False,
                               comment='This threshold will define when the irrigation system should act. '
                                       'Default value = .')
 
@@ -53,8 +55,8 @@ class Slot(Base):
     shelf_id = Column(String(128), ForeignKey('shelf.id'), nullable=False)
     shelf = relationship('Shelf', back_populates='slots')
     index = Column(Integer(), nullable=False, comment='The column index of where in the shelf the slot is')
-    available = Column(Boolean(), comment='Whether a given slot is available')
-    iot_devices = relationship('IotDevice', back_populates='slot')
+    available = Column(Boolean(), default=True, comment='Whether a given slot is available')
+    iot_devices = relationship(IotDevice, back_populates='slot')
     n_trays = Column(Integer(), default=0,
                      comment='Number of trays currently in the slot. Possible to have multiple trays '
                              'for germinations in one slot')
@@ -78,14 +80,14 @@ class Tray(Base):
 
     grow_start_date = Column(TIMESTAMP(),
                              comment='Date the tray is inserted in the rack.')
-    germination_end_date = Column('germination_end_date', DateTime(), nullable=False,
+    germination_end_date = Column('germination_end_date', DateTime(), nullable=True,
                                   comment='Actual date when tray was moved to next station.')
-    harvest_date = Column(DateTime(), nullable=False,
+    harvest_date = Column(DateTime(), nullable=True,
                           comment='Actual date when crop was harvested.')
 
     initial_tray_weight = Column(Float(), nullable=False,
                                  comment='Tray weight before inserting in the rack. '
                                          'This should include only plastic tray and substrate, '
                                          'nothing else(No seeds also).')
-    final_tray_weight = Column(Float(), nullable=False,
+    final_tray_weight = Column(Float(), nullable=True,
                                comment='Tray weight right before harvesting. ')

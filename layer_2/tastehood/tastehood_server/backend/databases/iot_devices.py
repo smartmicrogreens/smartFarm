@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 from tastehood_server.backend.databases import Base
+from tastehood_server.backend.databases.metrics import EnvironmentData
 
 
 class IotDevice(Base):
@@ -20,4 +21,4 @@ class IotDevice(Base):
 
     slot_id = Column(Integer(), ForeignKey('slots.id'), nullable=True)
     slot = relationship('Slot', foreign_keys=[slot_id], back_populates='iot_devices')
-    environment_data = relationship('EnvironmentData', foreign_keys=[], back_populates='iot_device')
+    environment_data = relationship(EnvironmentData, foreign_keys=[], back_populates='iot_device')
