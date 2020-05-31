@@ -37,7 +37,7 @@ class Shelf(Base):
     sunrise_t = Column('sunrise_time', Time(), nullable=False,
                        comment='Time to turn on shelf light.')
     sunset_t = Column('sunset_time', Time(), nullable=False,
-                      comment='Time to turn off shelf light.')
+                      comment='Time to turn off shelf light..')
 
     ## --- Moisture Threshold --- ##
     soil_moisture_th = Column('soil_moisture_threshold', Integer(), nullable=False,
