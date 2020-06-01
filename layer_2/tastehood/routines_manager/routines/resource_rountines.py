@@ -27,5 +27,5 @@ def switch_light_status(_shelf, _switchOn: bool, _device: 'IotDevice'):
     _device.update(LIGHT_UPDATE_STATUS, new_status)
     _device.disconnect()
 
-device = IotDevice('myDevice', 'This is my device', '192.168.11.41')
+device = IotDevice('myDevice', 'This is my device', TEST_DEVICE)
 switch_light_status(SHELF_2, OFF, device)

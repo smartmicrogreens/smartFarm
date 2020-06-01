@@ -2,6 +2,7 @@ import socket
 from routines_manager.core.module_connect import connect_to_module
 from routines_manager.core.read_socket import send
 from routines_manager.core.constants import EOL
+from routines_manager.core.constants import TEST_DEVICE
 
 # For now it uses standard Telnet port to communicate to device
 PORT = 23
@@ -69,7 +70,7 @@ class IotDevice:
 
         return output_2
 
-# device = IotDevice('myDevice', 'This is my device', '192.168.11.41')
+# device = IotDevice('myDevice', 'This is my device', TEST_DEVICE)
 #
 # device.connect()
 # print(device.update('<2;', [0,1,1,0]))
