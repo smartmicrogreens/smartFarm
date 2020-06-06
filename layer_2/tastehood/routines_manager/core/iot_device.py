@@ -16,15 +16,6 @@ class IotDevice:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.isConnected = False
 
-    def get_device_name(self):
-        return self.name
-
-    def get_device_description(self):
-        return self.description
-
-    def get_device_ip(self):
-        return self.id
-
     def connect(self):
         if not self.isConnected:
             self.client.settimeout(2)
