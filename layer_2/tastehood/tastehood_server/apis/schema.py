@@ -1,5 +1,7 @@
 """API schemas defined using pydantic."""
 from datetime import time
+from typing import List
+
 from pydantic import BaseModel
 
 __author__ = 'robin'
@@ -35,3 +37,9 @@ class NewSlot(BaseModel):
     shelf_id: str
     index: int
     available: bool = True
+
+
+class IotStatuses(BaseModel):
+    """A list of iots that should have a routine manager running."""
+    active: List[str]
+    inactive: List[str]

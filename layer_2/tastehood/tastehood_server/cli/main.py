@@ -18,3 +18,5 @@ def main():
 def start_server(port, host):
     """Start tastehood server."""
     uvicorn.run("tastehood_server.server:app", host=host, port=port, log_level="info")
+
+

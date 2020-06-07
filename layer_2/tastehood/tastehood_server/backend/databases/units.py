@@ -1,7 +1,8 @@
-from sqlalchemy import (Column, Integer, ForeignKey, Float, DateTime, Time, Boolean, String, ForeignKeyConstraint,
-                        TIMESTAMP)
-from sqlalchemy.orm import relationship
+import enum
 
+from sqlalchemy import (Column, Integer, ForeignKey, Float, DateTime, Time, Boolean, String, ForeignKeyConstraint,
+                        TIMESTAMP, Enum)
+from sqlalchemy.orm import relationship
 
 from tastehood_server.backend.databases import Base
 from tastehood_server.backend.databases.iot_devices import IotDevice
@@ -25,6 +26,22 @@ class Node(Base):
     shelves = relationship('Shelf', back_populates='node')
 
 
+class ShelfType(enum.Enum):
+    germination = 'GERMINATION'
+    growing = 'GROWING'
+
+class Slot(Base):
+    """Slits inside each shelf."""
+    __tablename__ = 'slots'
+    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
+    shelf_id = Column(String(128), ForeignKey('shelf.id'), nullable=False)
+    shelf = relationship('Shelf', back_populates='slots')
+    index = Column(Integer(), nullable=False, comment='The column index of where in the shelf the slot is')
+    available = Column(Boolean(), default=True, comment='Whether a given slot is available')
+    n_trays = Column(Integer(), default=0,
+                     comment='Number of trays currently in the slot. Possible to have multiple trays '
+                             'for germinations in one slot')
+
 class Shelf(Base):
     """ Creates the table that will contain information for each shelf as a unit """
 
@@ -34,8 +51,8 @@ class Shelf(Base):
 
     node_identification_id = Column(String(128), ForeignKey('node.id'),
                                     nullable=False)
-    node = relationship('Node', back_populates='shelves')
-    slots = relationship('Slot', back_populates='shelf')
+    node = relationship(Node, back_populates='shelves')
+    slots = relationship(Slot, back_populates='shelf')
     ## --- Light times --- ##
     sunrise_t = Column('sunrise_time', Time(), nullable=False,
                        comment='Time to turn on shelf light.')
@@ -46,20 +63,16 @@ class Shelf(Base):
     soil_moisture_th = Column(Integer(), nullable=False,
                               comment='This threshold will define when the irrigation system should act. '
                                       'Default value = .')
+    shelf_type = Column(Enum(ShelfType), nullable=False, comment='The type of a shelf.')
+
+    iot_devices = relationship(IotDevice, back_populates='shelf')
+    iot_device_id = Column(String(128), ForeignKey('iot_devices.id'), nullable=False)
 
 
-class Slot(Base):
-    """Slits inside each shelf."""
-    __tablename__ = 'slots'
-    id = Column(Integer(), primary_key=True, autoincrement=True, nullable=False)
-    shelf_id = Column(String(128), ForeignKey('shelf.id'), nullable=False)
-    shelf = relationship('Shelf', back_populates='slots')
-    index = Column(Integer(), nullable=False, comment='The column index of where in the shelf the slot is')
-    available = Column(Boolean(), default=True, comment='Whether a given slot is available')
-    iot_devices = relationship(IotDevice, back_populates='slot')
-    n_trays = Column(Integer(), default=0,
-                     comment='Number of trays currently in the slot. Possible to have multiple trays '
-                             'for germinations in one slot')
+class Status(enum.Enum):
+    germination = 'GERMINATION'
+    growing = 'GROWING'
+    finished = 'FINISHED'
 
 
 class Tray(Base):
@@ -84,10 +97,10 @@ class Tray(Base):
                                   comment='Actual date when tray was moved to next station.')
     harvest_date = Column(DateTime(), nullable=True,
                           comment='Actual date when crop was harvested.')
-
     initial_tray_weight = Column(Float(), nullable=False,
                                  comment='Tray weight before inserting in the rack. '
                                          'This should include only plastic tray and substrate, '
                                          'nothing else(No seeds also).')
     final_tray_weight = Column(Float(), nullable=True,
                                comment='Tray weight right before harvesting. ')
+    status = Column(Enum(Status), nullable=False, comment='Status of the tray.')

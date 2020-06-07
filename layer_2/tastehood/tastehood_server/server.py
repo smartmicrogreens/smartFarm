@@ -3,14 +3,14 @@ from fastapi import FastAPI
 
 from tastehood_server.backend import funcs
 from tastehood_server.apis.schema import (NewTrayInsert, NewShelf, NewNode,
-                                          NewSlot)
+                                          NewSlot, IotStatuses)
 
 app = FastAPI()
 
 
 # switch light -
 # PUT request
-# turn on airconditioner
+# turn on aircondition
 # turn on humidifier
 
 # insert tray -
@@ -42,3 +42,10 @@ def add_shelf(new_shelf: NewShelf):
 @app.put('/add_slot')
 def add_slot(new_slot: NewSlot):
     funcs.add_slot(new_slot)
+
+
+@app.get('/get_iots', response_model=IotStatuses)
+def get_iots_status():
+    active_iots = funcs.get_active_iots()
+    inactice_iots = funcs.get_inactive_iots()
+    return IotStatuses(active=active_iots, inactive=inactice_iots)

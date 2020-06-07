@@ -1,7 +1,9 @@
 """Main backend functionality implementations."""
+from typing import List
+
 from tastehood_server.apis.schema import (NewTrayInsert, NewNode, NewShelf,
-                                          NewSlot)
-from tastehood_server.backend.databases.units import Tray, Node, Shelf, Slot
+                                          NewSlot, IotStatuses)
+from tastehood_server.backend.databases.units import Tray, Node, Shelf, Slot, ShelfType
 from tastehood_server.backend.db_interface import get_session
 
 
@@ -31,3 +33,25 @@ def add_slot(slot: NewSlot):
     with get_session() as sess:
         slot = Slot(**slot.dict())
         sess.add(slot)
+
+
+def get_active_iots() -> List[str]:
+    """Get the iots device ids that should be running a routine manager."""
+    from sqlalchemy import any_
+    with get_session() as sess:
+        out = sess.query(Shelf).filter(
+            Shelf.shelf_type == ShelfType.growing,
+            any_(Slot.n_trays > 0)
+        ).all()  # type: List[Shelf]
+        return [o.iot_device_id for o in out]
+
+
+def get_inactive_iots() -> List[str]:
+    """Get the iots device ids that should NOT be running a routine manager."""
+    from sqlalchemy import all_
+    with get_session() as sess:
+        out = sess.query(Shelf).filter(
+            Shelf.shelf_type == ShelfType.growing,
+            all_(Slot.n_trays == 0)
+        ).all()  # type: List[Shelf]
+        return [o.iot_device_id for o in out]
